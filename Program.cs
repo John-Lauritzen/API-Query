@@ -28,10 +28,23 @@ namespace API_Query
 
         class MangaDetails
         {
-            public int malID;
-            public string romTitle;
-            public string engTitle;
-            public List<string> genres;
+            public int malID { get; set; }
+            public string romTitle { get; set; }
+            public string engTitle { get; set; }
+            public List<string> genres { get; set; }
+
+            public void GetDetails()
+            {
+                Console.WriteLine("MAL ID: " + malID);
+                Console.WriteLine("Romanji Title: " + romTitle);
+                Console.WriteLine("English Title: " + engTitle);
+                Console.Write("Tags: ");
+                foreach (var genre in genres)
+                {
+                    Console.Write(genre + " ");
+                }
+                Console.WriteLine();
+            }
         }
         
         static void Main(string[] args)
@@ -56,24 +69,23 @@ namespace API_Query
             StreamReader malDReader = MALConnection(malDetailsURL);
             //Parse JSON data
             var malDData = JObject.Parse(malDReader.ReadToEnd());
+            //Create new manga object
             MangaDetails manga1 = new MangaDetails();
+            //Assign values
             manga1.malID = malID;
             manga1.romTitle = malDData.SelectToken("title").Value<string>();
             manga1.engTitle = malDData.SelectToken("alternative_titles").SelectToken("en").Value<string>();
+            //Create temp list for breaking out genres
             var tempGenres = new List<string>();
+            //Add each genre name to temp list
             foreach (var result in malDData.SelectToken("genres"))
             {
                 tempGenres.Add(result.SelectToken("name").Value<string>());
             }
+            //Assign manga object with the completed list
             manga1.genres = tempGenres;
-            Console.WriteLine("MAL ID: " + manga1.malID);
-            Console.WriteLine("Romanji Title: " + manga1.romTitle);
-            Console.WriteLine("English Title: " + manga1.engTitle);
-            Console.WriteLine("Tags:");
-            foreach(var genre in manga1.genres)
-            {
-                Console.Write(genre + " ");
-            }
+            //Write contents
+            manga1.GetDetails();
 
         }
     }
