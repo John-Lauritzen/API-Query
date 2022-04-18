@@ -60,10 +60,20 @@ namespace API_Query
             manga1.malID = malID;
             manga1.romTitle = malDData.SelectToken("title").Value<string>();
             manga1.engTitle = malDData.SelectToken("alternative_titles").SelectToken("en").Value<string>();
-            manga1.genres = malDData.SelectToken("genres").First.Values<string>().ToList();
-
-            Console.WriteLine(manga1);
-            Console.ReadLine();
+            var tempGenres = new List<string>();
+            foreach (var result in malDData.SelectToken("genres"))
+            {
+                tempGenres.Add(result.SelectToken("name").Value<string>());
+            }
+            manga1.genres = tempGenres;
+            Console.WriteLine("MAL ID: " + manga1.malID);
+            Console.WriteLine("Romanji Title: " + manga1.romTitle);
+            Console.WriteLine("English Title: " + manga1.engTitle);
+            Console.WriteLine("Tags:");
+            foreach(var genre in manga1.genres)
+            {
+                Console.Write(genre + " ");
+            }
 
         }
     }
