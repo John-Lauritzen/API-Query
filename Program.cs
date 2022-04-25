@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -28,18 +27,23 @@ namespace API_Query
 
         class MangaDetails
         {
-            public int malID { get; set; }
-            public string romTitle { get; set; }
-            public string engTitle { get; set; }
-            public List<string> genres { get; set; }
+            public int MalID { get; set; }
+            public string RomTitle { get; set; }
+            public string EngTitle { get; set; }
+            public List<string> Genres { get; set; }
+
+            public MangaDetails()
+            {
+                Genres = new List<string>();
+            }
 
             public void GetDetails()
             {
-                Console.WriteLine("MAL ID: " + malID);
-                Console.WriteLine("Romanji Title: " + romTitle);
-                Console.WriteLine("English Title: " + engTitle);
+                Console.WriteLine("MAL ID: " + MalID);
+                Console.WriteLine("Romanji Title: " + RomTitle);
+                Console.WriteLine("English Title: " + EngTitle);
                 Console.Write("Tags: ");
-                foreach (var genre in genres)
+                foreach (var genre in Genres)
                 {
                     Console.Write(genre + " ");
                 }
@@ -72,18 +76,14 @@ namespace API_Query
             //Create new manga object
             MangaDetails manga1 = new MangaDetails();
             //Assign values
-            manga1.malID = malID;
-            manga1.romTitle = malDData.SelectToken("title").Value<string>();
-            manga1.engTitle = malDData.SelectToken("alternative_titles").SelectToken("en").Value<string>();
-            //Create temp list for breaking out genres
-            var tempGenres = new List<string>();
-            //Add each genre name to temp list
+            manga1.MalID = malID;
+            manga1.RomTitle = malDData.SelectToken("title").Value<string>();
+            manga1.EngTitle = malDData.SelectToken("alternative_titles").SelectToken("en").Value<string>();
+            //Add each genre name to object list
             foreach (var result in malDData.SelectToken("genres"))
             {
-                tempGenres.Add(result.SelectToken("name").Value<string>());
+                manga1.Genres.Add(result.SelectToken("name").Value<string>());
             }
-            //Assign manga object with the completed list
-            manga1.genres = tempGenres;
             //Write contents
             manga1.GetDetails();
 
